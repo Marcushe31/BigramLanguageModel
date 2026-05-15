@@ -50,13 +50,13 @@ public class Tokenizer {
                     sentenceTokens.add(word);
                 }
             }
-            // if the sentence has at least one word:
+            // if the sentence has at least one word: // 5/14/26: DONE 
             if (!sentenceTokens.isEmpty()){
-                // we want to add <bos> to the beginning of the sentence
+                // add <bos> to the beginning of the sentence
                 sentenceTokens.add(0, "<bos>");
-                // we want to add <eos> to the end of the sentence
+                //  add <eos> to the end of the sentence
                 sentenceTokens.add("<eos>");
-                // then, we want to add all the tokens to the final list
+                // then,  add all the tokens to the final list
                 tokens.addAll(sentenceTokens);
             }
         }
