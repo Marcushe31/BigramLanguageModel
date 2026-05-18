@@ -1,3 +1,4 @@
+<h3> THIS WAS auto generated for context btw!! </h3>
 # Bigram Language Model
 
 A bigram language model built in Java from scratch for my CISC 191 Honors Contract at Mesa College.
