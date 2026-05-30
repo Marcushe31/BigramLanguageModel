@@ -67,14 +67,26 @@ public class BigramModel implements LanguageModel {
         return (targetCount / (double) total) + EPSILON;
     }
 
-    // TODO: still gotta finish these two next time
+    // TODO: still gotta finish predictNext next time
     @Override
     public String predictNext(String... context) {
         return null;
     }
 
+    // NLL: scores how natural a sequence is. lower = better. basically the formula from the writeup // 5/28/26: DONE
     @Override
     public double negativeLogLikelihood(List<String> tokens) {
-        return 0.0;
+        double total = 0.0;
+        int pairs = 0;
+        // walk through the tokens in pairs, same idea as train
+        for (int i = 0; i < tokens.size() - 1; i++) {
+            String prev = tokens.get(i);
+            String target = tokens.get(i + 1);
+            // add the log of how probable this pair was, epsilon in probability() keeps this safe
+            total += Math.log(probability(target, prev));
+            pairs++;
+        }
+        // average it out and flip the sign so lower means a better fit
+        return -(total / pairs);
     }
 }
