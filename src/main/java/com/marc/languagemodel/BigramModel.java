@@ -40,12 +40,34 @@ public class BigramModel implements LanguageModel {
         }
     }
 
-    // TODO: these three still need doing next session, just stubbing em so the class compiles
+    // PROBABILITY: how likely is target to show up right after the context word? // 5/28/26: DONE
     @Override
     public double probability(String target, String... context) {
-        return 0.0;
+        // bigram only needs one word of context, the word right before
+        String prev = context[0];
+        // if we never saw either word in training, swap it out for the unknown token
+        if (!vocabulary.contains(prev)) {
+            prev = UNK;
+        }
+        if (!vocabulary.contains(target)) {
+            target = UNK;
+        }
+        // grab everything that followed prev when we trained
+        Map<String, Integer> nextWords = counts.get(List.of(prev));
+        // never seen this context at all? return a tiny number so log() doesnt blow up later
+        if (nextWords == null) {
+            return EPSILON;
+        }
+        // how many times target followed prev, over the total times prev was a context
+        int targetCount = nextWords.getOrDefault(target, 0);
+        int total = 0;
+        for (int count : nextWords.values()) {
+            total += count;
+        }
+        return (targetCount / (double) total) + EPSILON;
     }
 
+    // TODO: still gotta finish these two next time
     @Override
     public String predictNext(String... context) {
         return null;
