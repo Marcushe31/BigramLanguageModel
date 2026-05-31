@@ -19,6 +19,7 @@ public class BigramModel implements LanguageModel {
     private final Map<List<String>, Map<String, Integer>> counts = new HashMap<>();
     // every unique word seen during training. used later for the <unk> handling
     private final Set<String> vocabulary = new HashSet<>();
+    private final Random random = new Random();
 
     // TRAIN: counts up all the adjacent word pairs so we know what tends to follow what // 5/15/26: DONE
     @Override
@@ -67,10 +68,31 @@ public class BigramModel implements LanguageModel {
         return (targetCount / (double) total) + EPSILON;
     }
 
-    // TODO: still gotta finish predictNext next time
+    // PREDICT NEXT: picks a random next word, but words with bigger counts have better odds // 5/31/26: DONE
     @Override
     public String predictNext(String... context) {
-        return null;
+        String prev = context[0];
+        Map<String, Integer> nextWords = counts.get(List.of(prev));
+        // if we never saw this word before, just end the sentence
+        if (nextWords == null) {
+            return EOS;
+        }
+
+        int total = 0;
+        for (int count : nextWords.values()) {
+            total += count;
+        }
+
+        int pick = random.nextInt(total);
+        int runningTotal = 0;
+        for (String word : nextWords.keySet()) {
+            runningTotal += nextWords.get(word);
+            if (pick < runningTotal) {
+                return word;
+            }
+        }
+
+        return EOS;
     }
 
     // NLL: scores how natural a sequence is. lower = better. basically the formula from the writeup // 5/28/26: DONE
